@@ -6,6 +6,7 @@ import { AuthUserController } from "./controllers/user/AuthUserController";
 import { DetailUserController } from "./controllers/user/DetailUserController";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
 import { CreateCategoryController } from "./controllers/category/CreateCategoryController";
+import { ListCategoriesController } from "./controllers/category/ListCategoriesController";
 import { isAdmin } from "./middlewares/isAdmin";
 import { createCategorySchema } from "./schemas/categorySchema";
 
@@ -33,5 +34,7 @@ router.post(
   validateSchema(createCategorySchema),
   new CreateCategoryController().handle
 );
+
+router.get("/category", isAuthenticated, new ListCategoriesController().handle);
 
 export { router };
