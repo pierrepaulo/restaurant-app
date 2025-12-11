@@ -17,6 +17,7 @@ import {
   createProductSchema,
   listProductsSchema,
 } from "./schemas/productSchema";
+import { DeleteProductController } from "./controllers/product/DeleteProductController";
 
 const router = Router();
 const upload = multer(uploadConfig);
@@ -61,6 +62,13 @@ router.get(
   isAuthenticated,
   validateSchema(listProductsSchema),
   new ListProductsController().handle
+);
+
+router.delete(
+  "/product",
+  isAuthenticated,
+  isAdmin,
+  new DeleteProductController().handle
 );
 
 export { router };
