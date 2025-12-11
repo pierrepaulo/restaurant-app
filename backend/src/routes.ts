@@ -10,9 +10,13 @@ import { ListCategoriesController } from "./controllers/category/ListCategoriesC
 import { isAdmin } from "./middlewares/isAdmin";
 import { createCategorySchema } from "./schemas/categorySchema";
 import { CreateProductController } from "./controllers/product/CreateProductController";
+import { ListProductsController } from "./controllers/product/ListProductsController";
 import multer from "multer";
 import uploadConfig from "./config/multer";
-import { createProductSchema } from "./schemas/productSchema";
+import {
+  createProductSchema,
+  listProductsSchema,
+} from "./schemas/productSchema";
 
 const router = Router();
 const upload = multer(uploadConfig);
@@ -50,6 +54,13 @@ router.post(
   upload.single("file"),
   validateSchema(createProductSchema),
   new CreateProductController().handle
+);
+
+router.get(
+  "/products",
+  isAuthenticated,
+  validateSchema(listProductsSchema),
+  new ListProductsController().handle
 );
 
 export { router };
