@@ -16,8 +16,10 @@ import uploadConfig from "./config/multer";
 import {
   createProductSchema,
   listProductsSchema,
+  listProductsByCategorySchema,
 } from "./schemas/productSchema";
 import { DeleteProductController } from "./controllers/product/DeleteProductController";
+import { ListProductsByCategoryController } from "./controllers/product/ListProductsByCategoryController";
 
 const router = Router();
 const upload = multer(uploadConfig);
@@ -69,6 +71,13 @@ router.delete(
   isAuthenticated,
   isAdmin,
   new DeleteProductController().handle
+);
+
+router.get(
+  "/category/product",
+  isAuthenticated,
+  validateSchema(listProductsByCategorySchema),
+  new ListProductsByCategoryController().handle
 );
 
 export { router };
