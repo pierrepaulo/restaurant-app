@@ -3,6 +3,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  /* Brand */
+  --color-brand-primary: oklch(0.7049 0.1867 47.6);
+  --color-brand-primary-foreground: oklch(0.98 0 0);
+
+  /* App base */
+  --color-app-background: oklch(0.18 0.02 265);
+  --color-app-card: oklch(0.22 0.025 265);
+  --color-app-border: oklch(0.32 0.02 265);
+
+  /* Sidebar */
+  --color-app-sidebar: oklch(0.15 0.025 265);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
