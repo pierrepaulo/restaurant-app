@@ -1,6 +1,7 @@
 "use server";
 
 import { apiClient } from "@/lib/api";
+import { setToken } from "@/lib/auth";
 import { AuthResponse, User } from "@/lib/types";
 
 export async function registerAction(
@@ -50,6 +51,7 @@ export async function loginAction(
       method: "POST",
       body: JSON.stringify(data),
     });
+    await setToken(response.token);
 
     return { success: true, error: "", redirectTo: "/dashboard" };
   } catch (error) {
