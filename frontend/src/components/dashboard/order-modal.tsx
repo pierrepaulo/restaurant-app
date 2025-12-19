@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
 import { finishOrderAction } from "@/actions/orders";
 import { useRouter } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface OrderModalProps {
   orderId: string | null;
@@ -24,39 +25,45 @@ export function OrderModal({ onClose, orderId, token }: OrderModalProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const fetchOrder = async () => {
+  useEffect(() => {
     if (!orderId) {
       setOrder(null);
+      setLoading(false);
       return;
     }
 
-    try {
-      setLoading(true);
+    let isMounted = true;
 
-      const response = await apiClient<Order>(
-        `/order/detail?order_id=${orderId}`,
-        {
-          method: "GET",
-          token: token,
+    async function loadOrder() {
+      try {
+        setLoading(true);
+
+        const response = await apiClient<Order>(
+          `/order/detail?order_id=${orderId}`,
+          {
+            method: "GET",
+            token: token,
+          }
+        );
+
+        if (isMounted) {
+          setOrder(response);
         }
-      );
-
-      setOrder(response);
-
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    async function loadOrders() {
-      await fetchOrder();
+      } catch (err) {
+        console.log(err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
     }
 
-    loadOrders();
-  }, [orderId]);
+    void loadOrder();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [orderId, token]);
 
   const calculateTotal = () => {
     if (!order?.items) return 0;
@@ -81,20 +88,25 @@ export function OrderModal({ onClose, orderId, token }: OrderModalProps) {
   };
 
   return (
-    <Dialog open={orderId !== null} onOpenChange={() => onClose()}>
-      <DialogContent className="p-6 bg-app-card text-white max-w-2xl">
+    <Dialog
+      open={orderId !== null}
+      onOpenChange={(open) => {
+        if (!open) void onClose();
+      }}
+    >
+      <DialogContent className="bg-app-card text-white p-4 sm:p-6 sm:max-w-xl md:max-w-2xl h-[min(40rem,calc(100dvh-2rem))] flex flex-col overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
+          <DialogTitle className="text-xl sm:text-2xl font-bold">
             Detalhe do pedido
           </DialogTitle>
         </DialogHeader>
 
         {loading ? (
-          <div className="flex items-center justify-center py-8">
+          <div className="flex flex-1 items-center justify-center py-8">
             <p className="text-gray-400">Carregando...</p>
           </div>
         ) : order ? (
-          <div className="space-y-6">
+          <div className="flex flex-1 flex-col gap-6 min-h-0">
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Nome da categoria</p>
@@ -114,53 +126,56 @@ export function OrderModal({ onClose, orderId, token }: OrderModalProps) {
               </div>
             </div>
 
-            <div>
+            <div className="flex flex-1 flex-col min-h-0">
               <h3 className="text-lg font-semibold mb-3">Itens do pedido</h3>
-              <div className="space-y-3">
-                {order.items && order.items.length > 0 ? (
-                  order.items.map((item) => {
-                    const subtotal = item.product.price * item.amount;
-                    return (
-                      <div
-                        key={item.id}
-                        className="bg-app-background rounded-lg p-4 border border-app-border"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-base mb-1">
-                              {item.product.name}
-                            </h4>
-                            <p className="text-sm text-gray-400">
-                              {item.product.description}
-                            </p>
-                            <p className="text-sm text-gray-400 mt-2">
-                              {formatPrice(item.product.price)} x {item.amount}
-                            </p>
-                          </div>
-                          <div className="text-right ml-4">
-                            <p className="text-sm text-gray-400 mb-1">
-                              Quantidade: {item.amount}
-                            </p>
-                            <p className="font-semibold text-lg">
-                              Subtotal: {formatPrice(subtotal)}
-                            </p>
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="space-y-3 pr-4">
+                  {order.items && order.items.length > 0 ? (
+                    order.items.map((item) => {
+                      const subtotal = item.product.price * item.amount;
+                      return (
+                        <div
+                          key={item.id}
+                          className="bg-app-background rounded-lg p-4 border border-app-border"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-base mb-1">
+                                {item.product.name}
+                              </h4>
+                              <p className="text-sm text-gray-400">
+                                {item.product.description}
+                              </p>
+                              <p className="text-sm text-gray-400 mt-2">
+                                {formatPrice(item.product.price)} x{" "}
+                                {item.amount}
+                              </p>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className="text-sm text-gray-400 mb-1">
+                                Quantidade: {item.amount}
+                              </p>
+                              <p className="font-semibold text-lg">
+                                Subtotal: {formatPrice(subtotal)}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-gray-400 text-center py-4">
-                    Nenhum item no pedido
-                  </p>
-                )}
-              </div>
+                      );
+                    })
+                  ) : (
+                    <p className="text-gray-400 text-center py-4">
+                      Nenhum item no pedido
+                    </p>
+                  )}
+                </div>
+              </ScrollArea>
             </div>
 
             <div className="border-t border-app-border pt-4">
               <div className="flex justify-between items-center">
                 <span className="text-xl font-bold">Total</span>
-                <span className="text-2xl font-bold text-brand-primary">
+                <span className="text-xl sm:text-2xl font-bold text-brand-primary">
                   {formatPrice(calculateTotal())}
                 </span>
               </div>
@@ -168,10 +183,10 @@ export function OrderModal({ onClose, orderId, token }: OrderModalProps) {
           </div>
         ) : null}
 
-        <DialogFooter className="flex gap-3 sm:gap-3">
+        <DialogFooter className="shrink-0 gap-3 pt-4 border-t border-app-border">
           <Button
             variant="outline"
-            onClick={() => onClose()}
+            onClick={() => void onClose()}
             className="flex-1 border-app-border hover:bg-transparent bg-transparent text-white hover:text-white"
           >
             Fechar
