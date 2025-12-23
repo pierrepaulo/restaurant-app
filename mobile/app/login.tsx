@@ -1,10 +1,12 @@
 import { Button } from "@/components/Button";
 import { Input } from "@/components/input";
 import { colors, fontSize, spacing } from "@/constants/theme";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,16 +17,29 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
+  const router = useRouter();
 
-  function handleLogin() {
-    console.log({ email, password });
+  async function handleLogin() {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await signIn(email, password);
+      router.replace("/(authenticated)/dashboard");
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Erro", "Erro ao fazer o login");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior={"padding"}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
