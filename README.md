@@ -4,35 +4,35 @@
 
 <p>
   <a href="screenshots/image-1.jpg.png">
-    <img src="screenshots/image-1.jpg.png" alt="Image 1" width="33%" />
+    <img src="screenshots/image-1.jpg.png" alt="Image 1" width="32%" />
   </a>
   <a href="screenshots/image-2.jpg.png">
-    <img src="screenshots/image-2.jpg.png" alt="Image 2" width="33%" />
+    <img src="screenshots/image-2.jpg.png" alt="Image 2" width="32%" />
   </a>
   <a href="screenshots/image-3.jpg.png">
-    <img src="screenshots/image-3.jpg.png" alt="Image 3" width="33%" />
+    <img src="screenshots/image-3.jpg.png" alt="Image 3" width="32%" />
   </a>
 </p>
 <p>
   <a href="screenshots/image-4.jpg.png">
-    <img src="screenshots/image-4.jpg.png" alt="Image 4" width="33%" />
+    <img src="screenshots/image-4.jpg.png" alt="Image 4" width="32%" />
   </a>
   <a href="screenshots/image-5.jpg.png">
-    <img src="screenshots/image-5.jpg.png" alt="Image 5" width="33%" />
+    <img src="screenshots/image-5.jpg.png" alt="Image 5" width="32%" />
   </a>
   <a href="screenshots/image-6.jpg.png">
-    <img src="screenshots/image-6.jpg.png" alt="Image 6" width="33%" />
+    <img src="screenshots/image-6.jpg.png" alt="Image 6" width="32%" />
   </a>
 </p>
 <p>
   <a href="screenshots/image-12.jpg.png">
-    <img src="screenshots/image-12.jpg.png" alt="Image 12" width="33%" />
+    <img src="screenshots/image-12.jpg.png" alt="Image 12" width="32%" />
   </a>
   <a href="screenshots/image-13.jpg.png">
-    <img src="screenshots/image-13.jpg.png" alt="Image 13" width="33%" />
+    <img src="screenshots/image-13.jpg.png" alt="Image 13" width="32%" />
   </a>
   <a href="screenshots/image-14.jpg.png">
-    <img src="screenshots/image-14.jpg.png" alt="Image 14" width="33%" />
+    <img src="screenshots/image-14.jpg.png" alt="Image 14" width="32%" />
   </a>
 </p>
 <p>
